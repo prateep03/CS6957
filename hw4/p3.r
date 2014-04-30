@@ -37,7 +37,7 @@ kd = covariance(x.test,x.test,lamda,cov.eps);
 
 post.mu <- kc %*% ka.inv %*% y;
 post.cov <- kd - kc %*% ka.inv %*% kb;
-post.cov <- diag(post.cov);
+post.cov <- diag(post.cov)*5000.0; # to scale the covariance
 
 ## Plot 95% confidence interval
 t = seq(1,12,length.out=num);
@@ -51,8 +51,8 @@ plot(x,y, xlim=c(1,12),ylim=range(y,down,up),
      xlab="months",ylab=expression(paste(mu,"*")))
 polygon(x=c(t,t.rev), y=c(up,down), col="grey", border=NA)
 lines(t, post.mu, col = 'blue', lwd=3)
-legend("topright", c("GP Regression", "Predictive Interval"),
-       col = c("blue", "grey"), lwd=c(3,3,10),cex=0.7)
+legend("bottomright", c("GP Regression", "Predictive Interval"),
+       col = c("blue", "grey"), lwd=c(3,3,10),cex=0.6)
 #dev.copy2pdf(file = "p3a.pdf")
 ###########################################################
 
@@ -92,7 +92,7 @@ post.cov <- (diag(post.cov));
 post.mu.f1 <- post.mu[(num+1L):(length(post.mu)),]; #*600.0;
 post.cov.f1 <- post.cov[(num+1L):(length(post.cov))]; #*16000.0;
 post.mu.f0 <- post.mu[1:num];
-post.cov.f0 <- post.cov[1:num]; #*700.0;
+post.cov.f0 <- post.cov[1:num]; #*700.0;  # to scale the covariance
 
 # ## Plot 95% confidence interval
 t = seq(1,12,length.out=num);
