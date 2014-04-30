@@ -1,0 +1,185 @@
+\documentclass[11pt]{article}
+\usepackage{fullpage,url}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\usepackage{eso-pic}
+\usepackage{bm}
+\usepackage{caption}
+\usepackage{picins}   
+\usepackage{microtype}
+\usepackage{multirow}
+\usepackage{url}
+\usepackage{enumerate}
+
+\usepackage[letterpaper,top=1in,bottom=1in,left=1in,right=1in,nohead]{geometry}
+
+\newenvironment{claim}[1]{\noindent\underline{{\bf Claim:}}\space#1}{}
+\newenvironment{claimproof}[1]{\par\noindent\underline{{\bf Proof:}}\space#1}
+{\hfill$\square$}
+
+\setlength{\parindent}{0in}
+\setlength{\parskip}{6pt}
+
+\DeclareMathOperator{\E}{E}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Unif}{Unif}
+
+\begin{document}
+\thispagestyle{empty}
+{\large{\bf CS6957: Probabilistic Modeling \hfill Prateep Mukherjee(u0876583)}}\\
+
+{\LARGE{\bf Homework 0}}
+\vspace{0.2\baselineskip}
+\hrule
+
+1 (a)
+\textbf{Required To Prove:} $\E[ \E[X | Y] ] = \E[X]$.\\
+
+\begin{proof}[\bf{Proof:}]
+
+\begin{align*}
+E[E[X|Y]] &= \int\limits_y E[X|Y] p(Y=y) dy \\
+&= \int\limits_y (\int\limits_x x \cdot p(X=x|Y=y) dx) \; p(Y=y) dy \\
+&= \int\limits_y (\int\limits_x x \cdot \frac{p(X=x,Y=y)}{p(Y=y)} dx) \; p(Y=y) dy \\
+&= \int\limits_y \int\limits_x x \cdot p(X=x,Y=y) dx dy \\
+&= \int\limits_x x \int\limits_y p(X=x,Y=y) dy   dx \\
+&= \int\limits_x x \cdot p(X=x) \; dx \\
+&= E[X]
+\end{align*}
+
+\end{proof}
+
+\par (b) \textbf{Required To Prove:} $\Var(X) = \E[\Var(X | Y)] + \Var(\E[X | Y])$.\\
+
+\begin{proof}[\bf{Proof:}]
+
+\begin{eqnarray} \label{eq:the law of total variance}
+E[Var(X|Y)] + Var(E[X|Y]) &=& \int\limits_y E[E[X^2|Y] - E[X|Y]^2] + E[E[X|Y]^2] - E[E[X|Y]]^2 dy \notag \\
+&=& \int\limits_y E[E[X^2|Y]] - E[E[X|Y]]^2 dy
+\end{eqnarray}
+From the proof of problem $(a)$, we get,
+\begin{eqnarray*}
+E[E[X^2|Y]] &=& E[X^2]\\
+E[E[X|Y]]^2 &=& E[X]^2\\
+\end{eqnarray*}
+Thus, we can rewrite Eq.\eqref{eq:the law of total variance} as,
+\begin{eqnarray*}
+E[Var(X|Y)] + Var(E[X|Y]) &=& E[X^2]-E[X]^2\\
+&=& Var(X)
+\end{eqnarray*}
+
+\end{proof}
+
+\par 2. We can obtain the density function $p(y)$ using two approaches:
+
+\par \textbf{Approach 1:} a. , b.
+
+First, $Y = f(X) = \sqrt(X)$. This implies, 
+
+\begin{equation} 
+X = f^{-1}(Y) = Y^2
+\label{eq1}
+\end{equation}
+
+\begin{eqnarray*}
+p(y) &=& \left | \frac{d}{dy} f^{-1} (y)\right | p(f^{-1}(y)) \\
+\implies p(y) &=& \left | \frac{d}{dy} (y^2) \right | p(y^2) \: \: \: \: \: \: \: \: \mbox{(from \ref{eq1}) }\\
+\implies p(y)  &=& 2y\lambda e^{-\lambda y^2}
+\end{eqnarray*}
+
+The cdf is defined as follows:
+\vspace{-10pt}
+\begin{eqnarray}
+ F(y) &=& \int\limits_{-\infty}^{y} p(y) dy \notag \\
+\implies F(y) &=& \lambda \int\limits_{-\infty}^{y} 2y e^{-\lambda y^2} dy \notag \\
+\implies F(y) &=& 1 - e^{-\lambda y^2} \: \: \: \: \: \: \: \mbox{(variable substitution)}
+\label{eq2}
+\end{eqnarray}
+
+We can verify from eq. \ref{eq2} that $F(0) = 0$ and $F(\infty) = 1$.
+
+\par \textbf{Approach 2:} a. , b.
+
+Consider the cdf F:
+\vspace{-8pt}
+\begin{eqnarray}
+F(y) &=& p(Y \le y) = p(\sqrt{X} \le y) \notag \\
+\implies F(y) &=& p(X \le y^2) = \int\limits_{0}^{y^2} \lambda e^{-\lambda x} dx \notag \\
+\implies F(y) &=& 1-e^{-\lambda y^2} 
+\label{eq3}
+\end{eqnarray}
+
+We can verify from eq. \ref{eq3} that $F(0) = 0$ and $F(\infty) = 1$.
+
+Differentiating $F(y)$ wrt y, we get the density function as :
+\vspace{-8pt}
+\begin{equation*}
+p(y) = 2y\lambda e^{-\lambda y^2}
+\end{equation*}
+
+\par \textbf{c.} 
+\vspace{-10pt}
+
+\begin{eqnarray*}
+F(y) &=& 1 - e^{-\lambda y^2} \\
+\implies y &=& \sqrt{\frac{-ln(1-F)}{\lambda}} \\
+\implies F^{-1}(y) &=& \sqrt{\frac{-ln(1-F)}{\lambda}}
+\end{eqnarray*}
+
+\par \textbf{d.}
+
+\hspace{50pt} Here we use  \emph{integration by parts} which is stated as follows:
+
+\begin{equation}
+  \int u dv = uv - \int v du
+\label{intbparts}
+\end{equation}
+\hspace{50pt} \textbf{Mean}
+\vspace{-8pt}
+\begin{eqnarray*}
+\centering
+ E(Y) &=& \int_{-\infty}^\infty y \cdot p(y) dy = 2\int_{0}^\infty y \cdot p(y) dy\\
+     &=& 2\int_{0}^\infty y \cdot (2\lambda \exp^{-\lambda y^2} y) dy \\
+     &=& 2\int_{0}^\infty -y \cdot d(\exp^{-\lambda y^2}) \\
+     &=& 2[-y \cdot \exp^{-\lambda y^2}]_0^\infty + 2\int_{0}^\infty \exp^{-\lambda y^2} dy \; \; \; \; \: \: \: \mbox{(from Eq. \ref{intbparts})} \\
+     &=& \sqrt{\frac{\pi}{\lambda}}
+\end{eqnarray*}
+
+\hspace{50pt} \textbf{Variance} 
+\vspace{-8pt}
+\begin{eqnarray*}
+ Var(Y) &=& E(Y^2)-E(Y)^2 \\ 
+     &=& \int_{-\infty}^\infty y^2 \cdot p(y) dy - \frac{\pi}{\lambda} \\
+     &=& 2\int_{0}^\infty y^2 \cdot (2\lambda \exp^{-\lambda y^2} y) dy - \frac{\pi}{\lambda} \\
+     &=& 2\int_{0}^\infty \lambda y^2 \cdot (\exp^{-\lambda y^2}) d(y^2) - \frac{\pi}{\lambda} \; \; \; \; \: \: \: \mbox{(var substitution)}
+\end{eqnarray*}
+\hspace{50pt} Changing variable as $y^2 = t$ ($y = 0 \implies t = 0, y = \infty \implies t = \infty $), we get,
+\begin{eqnarray*}
+Var(Y) &=& 2\int_{0}^\infty \lambda t \cdot (\exp^{-\lambda t}) d(t) - \frac{\pi}{\lambda} \\
+       &=& 2\int_{0}^\infty -t \cdot d(\exp^{-\lambda t}) - \frac{\pi}{\lambda} \\
+     &=& 2[-t \cdot \exp^{-\lambda t}]_0^\infty + 2\int_{0}^\infty \exp^{-\lambda t} dt - \frac{\pi}{\lambda} \; \; \; \; \; \; \; \mbox{(from Eq. \ref{intbparts})} \\
+     &=& 0+2\int_{0}^\infty \exp^{-\lambda t} dt - \frac{\pi}{\lambda}\\
+     &=& 2[-\frac{1}{\lambda} \cdot \exp^{-\lambda t}]_0^\infty - \frac{\pi}{\lambda}\\
+     &=& \frac{2-\pi}{\lambda}
+\end{eqnarray*}
+
+\par \textbf{3.}
+  The maximum likelihood estimate for $\lambda$ can be obtained by maximizing the joint log-likelihood 
+\vspace{-8pt}
+\begin{eqnarray}
+L(\lambda ; y_1, y_2, \cdots y_n) &=& p(y_1, y_2, \cdots y_n ; \lambda)\notag \\
+&=& \prod_{i=1}^{N} p(y_i; \lambda) \notag \\
+&=& \prod_{i=1}^{N} 2\lambda y_i e^{-\lambda y_{i}^2}
+\label{eq4}
+\end{eqnarray}
+
+\hspace{10pt} Differentiating logarithm of eq. \eqref{eq4} w.r.t. $\lambda$, we get, 
+
+\begin{eqnarray*}
+l = ln \; L(\lambda ; y_1, y_2, \cdots y_n) &=& \sum\limits_{i=1}^{N} ln \; 2 y_i \lambda e^{-\lambda y_{i}^2} \\
+\implies \frac{dl}{d\lambda} &=& \frac{N}{\lambda} - \sum\limits_{i=1}^{N} y_{i}^2 = 0\\
+\implies \hat{\lambda} &=& \frac{N}{\sum_{i=1}^{N} y_{i}^2 }
+\end{eqnarray*}
+
+\hspace{50pt} So the maximum likelihood estimate for $\lambda$ is $\frac{N}{\sum_{i=1}^{N}  y_{i}^2}$
+\end{document}
